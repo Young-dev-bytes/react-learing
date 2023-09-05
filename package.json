@@ -1,0 +1,57 @@
+{
+  "name": "hello-react",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@faker-js/faker": "^8.0.2",
+    "@reduxjs/toolkit": "^1.9.5",
+    "antd": "^5.6.3",
+    "axios": "^1.4.0",
+    "babel-preset-react-app": "^10.0.1",
+    "json-server": "^0.17.3",
+    "leaflet": "^1.9.4",
+    "nanoid": "^4.0.2",
+    "pubsub-js": "^1.9.4",
+    "query-string": "^8.1.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-leaflet": "^4.2.1",
+    "react-redux": "^8.1.1",
+    "react-router-dom": "^6.14.1",
+    "react-scripts": "5.0.1",
+    "redux": "^4.2.1",
+    "redux-devtools-extension": "^2.13.9",
+    "redux-thunk": "^2.4.2",
+    "web-vitals": "^2.1.4"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "server": "json-server --watch data/cities.json --port 8000 --delay 1000"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "prettier": "^3.0.3",
+    "prettier-plugin-tailwindcss": "^0.5.4",
+    "tailwindcss": "^3.3.3"
+  }
+}
