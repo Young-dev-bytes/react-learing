@@ -1,79 +1,81 @@
-const { createSlice } = require('@reduxjs/toolkit');
+import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   cart: [],
-  // cart: [
-  //   {
-  //     pizzaId: 12,
-  //     name: 'Mediterranean',
-  //     quantity: 2,
-  //     unitPrice: 16,
-  //     totalPrice: 32,
-  //   },
-  // ],
 };
 
 const cartSlice = createSlice({
   name: 'cart',
   initialState,
   reducers: {
-    addItem(state, action) {
-      //  payload = newItem
-      console.log('action', action);
+    addItem: (state, action) => {
+      // payload is newItem
       state.cart.push(action.payload);
     },
-    deleteItem(state, action) {
-      // payload = pizzaId
-      console.log('0000');
+    deleteItem: (state, action) => {
+      // payload is pizzaId
       state.cart = state.cart.filter((item) => item.pizzaId !== action.payload);
     },
-    increaseItemQuantity(state, action) {
-      // payload = pizzaId
-      const item = state.cart.find((item) => item.pizzaId === action.payload);
-      item.quantity++;
-      item.totalPrice = item.quantity * item.unitPrice;
+    increaseQuantity: (state, action) => {
+      // payload is pizzaId
+      const cartItem = state.cart.find(
+        (item) => item.pizzaId === action.payload,
+      );
+      cartItem.quantity++;
+      cartItem.totalPrice = cartItem.quantity * cartItem.unitPrice;
     },
-    decreaseItemQuantity(state, action) {
-      // payload = pizzaId
-      const item = state.cart.find((item) => item.pizzaId === action.payload);
-      item.quantity--;
-      item.totalPrice = item.quantity * item.unitPrice;
-
-      if (item.quantity === 0) {
-        // call method in caseReducers of cartSlice
-        return cartSlice.caseReducers.deleteItem(state, action);
+    decreaseQuantity: (state, action) => {
+      // payload is pizzaId
+      const cartItem = state.cart.find(
+        (item) => item.pizzaId === action.payload,
+      );
+      cartItem.quantity--;
+      cartItem.totalPrice = cartItem.quantity * cartItem.unitPrice;
+      if (cartItem.quantity === 0) {
+        cartSlice.caseReducers.deleteItem(state, action);
       }
     },
-    clearCart(state) {
+    clearCart: (state) => {
       state.cart = [];
     },
   },
 });
 
-console.log('cartSlice', cartSlice);
-
 export const {
   addItem,
   deleteItem,
-  increaseItemQuantity,
-  decreaseItemQuantity,
+  increaseQuantity,
+  decreaseQuantity,
   clearCart,
 } = cartSlice.actions;
 export default cartSlice.reducer;
 
-export const getTotalCartQuantity = (state) =>
-  state.cart.cart.reduce((sum, item) => sum + item.quantity, 0);
+export const getCart = (state) => state.cart.cart;
+
+//  ? ! i don't know how to write this, but now I got it
+
+// ! version - simple
+// export function getItemQuantity(pizzaId) {
+//   return (state) => {
+//     console.log(state);
+//     return state.cart.cart.find((item) => item.pizzaId === pizzaId).quantity;
+//   };
+// }
+
+// ! version - good
+// export const getItemQuantity = (pizzaId) => {
+//   return (state) =>
+//     state.cart.find((item) => item.pizzaId === pizzaId)?.quantity;
+// };
+
+// ! version - final
+export const getItemQuantity = (pizzaId) => (state) =>
+  state.cart.cart.find((item) => item.pizzaId === pizzaId)?.quantity ?? 0;
 
 export const getTotalCartPrice = (state) =>
+  // ! remember it :
+  // * state.cart.cart.reduce((sum, item) => sum + item.totalPrice, 0);
   state.cart.cart.reduce((sum, item) => sum + item.totalPrice, 0);
 
-export const getCartList = (state) => state.cart.cart;
-
-export const getCurrentQuantityById = (id) => (state) =>
-  state.cart.cart.find((item) => item.pizzaId === id);
-
-export function getCurrentQuantityByIdFunc(id) {
-  return (state) => {
-    return state.cart.cart.find((item) => item.pizzaId === id)?.quantity ?? 0;
-  };
-}
+export const getTotalQuantity = (state) =>
+  state.cart.cart.reduce((sum, item) => sum + item.quantity, 0);

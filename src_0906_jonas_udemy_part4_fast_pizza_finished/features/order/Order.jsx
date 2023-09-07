@@ -1,6 +1,6 @@
 // Test ID: IIDSAT
 
-import { useLoaderData } from 'react-router-dom';
+import { useFetcher, useLoaderData } from 'react-router-dom';
 import { useEffect } from 'react';
 import { getOrder } from '../../services/apiRestaurant';
 import {
@@ -10,12 +10,14 @@ import {
 } from '../../utils/helpers';
 
 import OrderItem from './OrderItem';
+import UpdateOrder from './UpdateOrder';
 
 function Order() {
   // Everyone can search for all orders, so for privacy reasons we're gonna gonna exclude names or address, these are only for the restaurant staff
 
-  console.log('order');
   const order = useLoaderData();
+  console.log('order=====>', order);
+  const fetcher = useFetcher();
   const {
     id,
     status,
@@ -25,12 +27,22 @@ function Order() {
     estimatedDelivery,
     cart,
   } = order;
+  console.log('order', order);
 
   const deliveryIn = calcMinutesLeft(estimatedDelivery);
 
   useEffect(() => {
+    console.log('fetcher effect', fetcher);
+    if (fetcher.state === 'idle' && !fetcher.data) fetcher.load('/menu');
+  }, [fetcher]);
+
+  useEffect(() => {
     console.log('order effect');
   }, []);
+
+  const handleUpdateOrder = () => {
+    console.log('handleUpdateOrder');
+  };
 
   return (
     <div className="space-y-8 px-4 py-6">
@@ -62,7 +74,15 @@ function Order() {
 
       <ul className="divide-y divide-stone-200 border-b border-t">
         {cart.map((item) => (
-          <OrderItem item={item} key={item.pizzaId} />
+          <OrderItem
+            item={item}
+            key={item.pizzaId}
+            isLoadingIngredients={fetcher.state === 'loading'}
+            ingredients={
+              fetcher?.data?.find((el) => el.id === item.pizzaId)
+                ?.ingredients ?? []
+            }
+          />
         ))}
       </ul>
 
@@ -79,14 +99,14 @@ function Order() {
           To pay on delivery: {formatCurrency(orderPrice + priorityPrice)}
         </p>
       </div>
+      {!priority && <UpdateOrder order={order} onClick={handleUpdateOrder} />}
     </div>
   );
 }
 
 export async function loader({ params }) {
-  console.log('order loader');
   const order = await getOrder(params.orderId);
-  console.log('order loader finish');
+  console.log('order', order);
   return order;
 }
 
