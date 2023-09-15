@@ -47,7 +47,35 @@ function CompanyItem({ company, defaultVisibility }) {
   );
 }
 
-function List({ title, items, renderItem }) {
+function ProductsList({ title, items }) {
+  const { isOpen, isCollapsed, setIsCollapsed, toggleOpen } = useShowVisible();
+
+  const displayItems = isCollapsed ? items.slice(0, 3) : items;
+
+  return (
+    <div className="list-container">
+      <div className="heading">
+        <h2>{title}</h2>
+        <button onClick={toggleOpen}>
+          {isOpen ? <span>&or;</span> : <span>&and;</span>}
+        </button>
+      </div>
+      {isOpen && (
+        <ul className="list">
+          {displayItems.map((product) => (
+            <ProductItem key={product.productName} product={product} />
+          ))}
+        </ul>
+      )}
+
+      <button onClick={() => setIsCollapsed((isCollapsed) => !isCollapsed)}>
+        {isCollapsed ? `Show all ${items.length}` : "Show less"}
+      </button>
+    </div>
+  );
+}
+
+function CompaniesList({ title, items }) {
   const { isOpen, isCollapsed, setIsCollapsed, toggleOpen } = useShowVisible();
   const displayItems = isCollapsed ? items.slice(0, 3) : items;
 
@@ -59,11 +87,13 @@ function List({ title, items, renderItem }) {
           {isOpen ? <span>&or;</span> : <span>&and;</span>}
         </button>
       </div>
-      {/* {isOpen && <ul className="list">{renderItem(displayItems)}</ul>} */}
-      {isOpen && <ul className="list">{displayItems.map(renderItem)}</ul>}
-      {/* {isOpen && (
-        <ul className="list">{displayItems.map((item) => renderItem(item))}</ul>
-      )} */}
+      {isOpen && (
+        <ul className="list">
+          {displayItems.map((company) => (
+            <CompanyItem key={company.companyName} company={company} />
+          ))}
+        </ul>
+      )}
 
       <button onClick={() => setIsCollapsed((isCollapsed) => !isCollapsed)}>
         {isCollapsed ? `Show all ${items.length}` : "Show less"}
@@ -78,35 +108,15 @@ export default function App() {
       <h1>Render Props Demo</h1>
 
       <div className="col-2">
-        <List
-          title="Products"
-          items={products}
-          renderItem={(product) => (
-            <ProductItem key={product.productName} product={product} />
-          )}
-        />
-        <List
-          title="Companies"
-          items={companies}
-          renderItem={(company) => (
-            <CompanyItem
-              key={company.companyName}
-              company={company}
-              defaultVisibility={true}
-            />
-          )}
-        />
-      </div>
-      <div className="col-2">
-        <ProductList items={products} />
-        <HOCProductList title="Products HOC" items={products} />
+        <ProductsList title="Products" items={products} />
+        <CompaniesList title="Companies" items={companies} />
       </div>
     </div>
   );
 }
 
 // LATER: Let's say we got this component from a 3rd-party library, and can't change it. But we still want to add the 2 toggle functionalities to it
-function ProductList({ items }) {
+function ProductList({ title, items }) {
   return (
     <ul className="list">
       {items.map((product) => (
@@ -114,32 +124,4 @@ function ProductList({ items }) {
       ))}
     </ul>
   );
-}
-
-const HOCProductList = withTest(ProductList);
-
-function withTest(A) {
-  return function PP({ title, items }) {
-    console.log("title", title);
-    console.log("items", items);
-
-    const { isOpen, isCollapsed, setIsCollapsed, toggleOpen } =
-      useShowVisible();
-    const displayItems = isCollapsed ? items.slice(0, 3) : items;
-
-    return (
-      <div className="list-container">
-        <div className="heading">
-          <h2>{title}</h2>
-          <button onClick={toggleOpen}>
-            {isOpen ? <span>&or;</span> : <span>&and;</span>}
-          </button>
-        </div>
-        {isOpen && <A items={displayItems} />}
-        <button onClick={() => setIsCollapsed((isCollapsed) => !isCollapsed)}>
-          {isCollapsed ? `Show all ${items.length}` : "Show less"}
-        </button>
-      </div>
-    );
-  };
 }

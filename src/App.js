@@ -47,7 +47,7 @@ function CompanyItem({ company, defaultVisibility }) {
   );
 }
 
-function ProductsList({ title, items }) {
+function List({ title, items }) {
   const { isOpen, isCollapsed, setIsCollapsed, toggleOpen } = useShowVisible();
 
   const displayItems = isCollapsed ? items.slice(0, 3) : items;
@@ -75,32 +75,32 @@ function ProductsList({ title, items }) {
   );
 }
 
-function CompaniesList({ title, items }) {
-  const { isOpen, isCollapsed, setIsCollapsed, toggleOpen } = useShowVisible();
-  const displayItems = isCollapsed ? items.slice(0, 3) : items;
+// function CompaniesList({ title, items }) {
+//   const { isOpen, isCollapsed, setIsCollapsed, toggleOpen } = useShowVisible();
+//   const displayItems = isCollapsed ? items.slice(0, 3) : items;
 
-  return (
-    <div className="list-container">
-      <div className="heading">
-        <h2>{title}</h2>
-        <button onClick={toggleOpen}>
-          {isOpen ? <span>&or;</span> : <span>&and;</span>}
-        </button>
-      </div>
-      {isOpen && (
-        <ul className="list">
-          {displayItems.map((company) => (
-            <CompanyItem key={company.companyName} company={company} />
-          ))}
-        </ul>
-      )}
+//   return (
+//     <div className="list-container">
+//       <div className="heading">
+//         <h2>{title}</h2>
+//         <button onClick={toggleOpen}>
+//           {isOpen ? <span>&or;</span> : <span>&and;</span>}
+//         </button>
+//       </div>
+//       {isOpen && (
+//         <ul className="list">
+//           {displayItems.map((company) => (
+//             <CompanyItem key={company.companyName} company={company} />
+//           ))}
+//         </ul>
+//       )}
 
-      <button onClick={() => setIsCollapsed((isCollapsed) => !isCollapsed)}>
-        {isCollapsed ? `Show all ${items.length}` : "Show less"}
-      </button>
-    </div>
-  );
-}
+//       <button onClick={() => setIsCollapsed((isCollapsed) => !isCollapsed)}>
+//         {isCollapsed ? `Show all ${items.length}` : "Show less"}
+//       </button>
+//     </div>
+//   );
+// }
 
 export default function App() {
   return (
@@ -108,8 +108,8 @@ export default function App() {
       <h1>Render Props Demo</h1>
 
       <div className="col-2">
-        <ProductsList title="Products" items={products} />
-        <CompaniesList title="Companies" items={companies} />
+        <List title="Products" items={products} />
+        {/* <CompaniesList title="Companies" items={companies} /> */}
       </div>
     </div>
   );
